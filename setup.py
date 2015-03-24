@@ -1,5 +1,10 @@
+import pymongo
 import twitter
 import yaml
+
+client = MongoClient()
+db = client.pipper
+tweets = db.tweets
 
 credentials = yaml.load(open("credentials.yml", "r"))
 api = twitter.Api(consumer_key=credentials['consumer_key'],
@@ -9,3 +14,5 @@ api = twitter.Api(consumer_key=credentials['consumer_key'],
 
 final_tweet = 579762557763891200
 r = api.GetSearch("#ElClasico -filter:retweets", count=100, result_type="recent", include_entities=True, max_id=final_tweet)
+
+tweets.insert(tweet)
