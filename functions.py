@@ -1,5 +1,6 @@
 import datetime
 import pymongo
+import re
 import time
 import twitter
 import yaml
@@ -19,20 +20,20 @@ api = twitter.Api(consumer_key=credentials['consumer_key'],
         access_token_key=credentials['access_token_key'],
         access_token_secret=credentials['access_token_secret'])
 
-def checkTextInTweets(tweets, regex, conditions):
+def checkTextInTweets(tweets, regex, conditions={}):
     regex_condition = {"text": {"$regex" : regex}}
     conditions.update(regex_condition)
     return tweets.find(conditions)
 
 
-def filterTweetsMentioning(tweets, screen_name, conditions):
+def filterTweetsMentioning(tweets, screen_name, conditions={}):
     conditions.update({"user_mentions": {"$exists": True}, "user_mentions.screen_name": screen_name})
     return tweets.find(conditions)
 
 def mentionsByHalf(tweets, mentions, half, title=""):
     for mention in mentions:
         mentioning = filterTweetsMentioning(tweets, mention, {"game_half": half})
-        cnt = getCounterfromCursor(mentioning, "minute_half")
+        cnt = getCounter(mentioning, "minute_half")
         cnt = zeroSetter(cnt)
         plt.plot(cnt.keys(), cnt.values(), label=mention)
 
@@ -57,10 +58,10 @@ def zeroSetter(cnt):
     return cnt
 
 def getCounter(tweets, key, condition=None):
-    return Counter(map(lambda x:x[key], tweets.find(condition)))
-
-def getCounterfromCursor(cursor, key):
-    return Counter(map(lambda x: x[key], cursor))
+    if tweets.__class__ == pymongo.cursor.Cursor :
+        return Counter(map(lambda x: x[key], tweets))
+    else:
+        return Counter(map(lambda x:x[key], tweets.find(condition)))
 
 def printGraph(values, keys, width, np):
     indexes = np.arange(len(values))
