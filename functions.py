@@ -63,19 +63,19 @@ def getCounter(tweets, key, condition=None):
     else:
         return Counter(map(lambda x:x[key], tweets.find(condition)))
 
-def printGraph(values, keys, width, np):
-    indexes = np.arange(len(values))
-    plt.bar(indexes, values, width)
-    plt.xticks(indexes + width * 0.5, keys)
-    plt.show()
-
-def makePlot(tweets, plt, field1, field2):
+def makePlot(tweets, field1, field2):
     first_dim = map(lambda x: x[field1], tweets.find())
     second_dim = map(lambda x: x[field2], tweets.find())
     plt.plot(first_dim, second_dim)
     plt.show()
 
-def makeGraph(cnt, np, plt, threshold=0.005, order=None):
+def printGraph(values, keys, width):
+    indexes = np.arange(len(values))
+    plt.bar(indexes, values, width)
+    plt.xticks(indexes + width * 0.5, keys)
+    plt.show()
+
+def makeGraph(cnt, threshold=0.005, order=None):
     if(order == "most_common"):
         ordered = cnt.most_common()
     else:
@@ -84,10 +84,10 @@ def makeGraph(cnt, np, plt, threshold=0.005, order=None):
     keys = map(lambda x: x[0], ordered)
     values = map(lambda x: x[1], ordered)
 
-    printGraph(values, keys, 1, np)
+    printGraph(values, keys, 1)
 
 
-def makePie(cnt, np, plt, title="", threshold=0.005):
+def makePie(cnt, title="", threshold=0.005):
     ordered = cnt.most_common()
     total_values = map(lambda x: x[1], ordered)
     min_value = threshold * sum(total_values)
@@ -106,7 +106,7 @@ def makePie(cnt, np, plt, title="", threshold=0.005):
 
     plt.show()
 
-def get_tweets(api, tweets, query, final_tweet, begin_tweet):
+def get_tweets(tweets, query, final_tweet, begin_tweet):
     r = api.GetSearch(query + " -filter:retweets", count=100, result_type="recent", include_entities=True, max_id=final_tweet)
 
     for tweet in r:
@@ -117,10 +117,10 @@ def get_tweets(api, tweets, query, final_tweet, begin_tweet):
                     formattedTweet["urls"] = formattedTweet["urls"].values()
                 tweets.insert(formattedTweet)
 
-def get_many_tweets(api, tweets, query, final_tweet, begin_tweet):
+def get_many_tweets(tweets, query, final_tweet, begin_tweet):
   while final_tweet > begin_tweet:
       for i in xrange(15):
           if final_tweet > begin_tweet:
-              get_tweets(api, tweets, query, final_tweet, begin_tweet)
+              get_tweets(tweets, query, final_tweet, begin_tweet)
               final_tweet = tweets.find().sort("id", pymongo.ASCENDING)[0]["id"]
       time.sleep(910)
