@@ -62,16 +62,16 @@ def getCounter(tweets, key, condition=None):
 def getCounterfromCursor(cursor, key):
     return Counter(map(lambda x: x[key], cursor))
 
-def printGraph(values, keys, width):
-    indexes = np.arange(len(values))
-    plt.bar(indexes, values, width)
-    plt.xticks(indexes + width * 0.5, keys)
-    plt.show()
-
 def makePlot(tweets, field1, field2):
     first_dim = map(lambda x: x[field1], tweets.find())
     second_dim = map(lambda x: x[field2], tweets.find())
     plt.plot(first_dim, second_dim)
+    plt.show()
+
+def printGraph(values, keys, width):
+    indexes = np.arange(len(values))
+    plt.bar(indexes, values, width)
+    plt.xticks(indexes + width * 0.5, keys)
     plt.show()
 
 def makeGraph(cnt, threshold=0.005, order=None):
