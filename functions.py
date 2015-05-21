@@ -30,10 +30,10 @@ def filterTweetsMentioning(tweets, screen_name, conditions={}):
     conditions.update({"user_mentions": {"$exists": True}, "user_mentions.screen_name": screen_name})
     return tweets.find(conditions)
 
-def mentionsByHalf(tweets, mentions, half, title=""):
+def getMentionsPlot(tweets, mentions, key, conditions, title=""):
     for mention in mentions:
-        mentioning = filterTweetsMentioning(tweets, mention, {"game_half": half})
-        cnt = getCounter(mentioning, "minute_half")
+        mentioning = filterTweetsMentioning(tweets, mention, conditions)
+        cnt = getCounter(mentioning, key)
         cnt = zeroSetter(cnt)
         plt.plot(cnt.keys(), cnt.values(), label=mention)
 
@@ -63,7 +63,7 @@ def getCounter(tweets, key, condition=None):
     else:
         return Counter(map(lambda x:x[key], tweets.find(condition)))
 
-def makePlotFromCounter(cnt)
+def makePlotFromCounter(cnt):
     plt.plot(cnt.values(), cnt.keys())
     plt.show()
 
