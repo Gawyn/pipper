@@ -64,8 +64,11 @@ def getCounter(tweets, key, condition=None):
         return Counter(map(lambda x:x[key], tweets.find(condition)))
 
 def makePlot(tweets, field1, field2):
-    first_dim = map(lambda x: x[field1], tweets.find())
-    second_dim = map(lambda x: x[field2], tweets.find())
+    if tweets.__class__ != pymongo.cursor.Cursor :
+        tweets = tweets.find()
+
+    first_dim = map(lambda x: x[field1], tweets))
+    second_dim = map(lambda x: x[field2], tweets))
     plt.plot(first_dim, second_dim)
     plt.show()
 
