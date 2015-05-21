@@ -63,6 +63,10 @@ def getCounter(tweets, key, condition=None):
     else:
         return Counter(map(lambda x:x[key], tweets.find(condition)))
 
+def makePlotFromCounter(cnt)
+    plt.plot(cnt.values(), cnt.keys())
+    plt.show()
+
 def makePlot(tweets, field1, field2):
     if tweets.__class__ != pymongo.cursor.Cursor :
         tweets = tweets.find()
